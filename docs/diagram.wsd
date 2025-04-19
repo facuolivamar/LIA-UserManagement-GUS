@@ -1,0 +1,133 @@
+"@startuml full_logical_erd"
+
+!define PRIMARY_KEY(x) <b><color:blue>x</color></b>
+!define FOREIGN_KEY(x) <color:green>x</color>
+!define COMPOSITE_KEY(x, y) <color:LightSalmon>x, y</color>
+
+
+class AbstractBaseUser {
+    + password : Charfield
+    + last_login : blank=True, null=True
+    + is_active : default=True
+    
+    --
+    __str__()
+    + save()
+    + get_username()
+    + clean()
+    + natural_key()
+    + set_password( make_password() )
+    + check_password()
+    + acheck_password
+    + set_unusable_password()
+    + has_usable_password()
+    + get_session_auth_hash()
+    + get_session_auth_fallback_hash()
+    + _get_session_auth_hash()
+    --
+    @property : is_anonymous()
+    @property : is_authenticated()
+    --
+    @classmethod : get_email_field_name()
+    @classmethod : normalize_username()
+}
+
+class PermissionsMixin {
+    + is_superuser
+    + groups : ManyToManyField(Group)
+    + user_permissions : ManyToManyField(Permission)
+
+    --
+    get_user_permissions()
+    get_group_permissions()
+    get_all_permissions()
+    has_perm()
+    has_perms()
+    has_module_perms()
+    --
+}
+
+class AbstractUser {
+    + username : unique, null=True
+    + first_name : blank=True
+    + last_name : blank=True
+    + email : unique, blank=True
+    + is_staff : default=False
+    + date_joined : default=timezone.now
+    - EMAIL_FIELD : "email"
+    - USERNAME_FIELD : "username"
+    - REQUIRED_FIELDS : ["email"]
+
+    --
+    + clean() : normalize_email(self.email)
+    + get_full_name()
+    + get_short_name()
+    + email_user()
+    --
+}
+
+class CustomUser {
+}
+
+AbstractBaseUser <|-- AbstractUser
+PermissionsMixin <|-- AbstractUser
+AbstractUser <|-- CustomUser
+
+
+entity T_USER {
+    + PRIMARY_KEY(id)
+    + password
+    + last_login : blank=True, null=True
+    + username : unique, null=True
+    + first_name : blank=True
+    + last_name : blank=True
+    + email : unique, blank=True
+    + is_staff : default=False
+    + is_active : default=True
+    + date_joined : default=timezone.now
+    + is_superuser : default=False
+}
+
+CustomUser <|-- T_USER
+
+' entity Usuario {
+'   *id_usuario : int
+'   --
+'   nombre : string
+'   email : string
+'   fecha_registro : date
+' }
+
+entity T_SUBSCRIPTION {
+  + PRIMARY_KEY(id)
+  --
+  start_date : date
+  end_date : date || null
+  status : string
+  credits_consumed : int
+  credits_consumed_detail : json
+  --
+  user_id: FOREIGN_KEY(T_USER) : on_delete=CASCADE, related_name="subscriptions"
+}
+
+' entity Plan {
+'   *id_plan : int
+'   --
+'   nombre : string
+'   precio_mensual : float
+'   limite_creditos_mensual : int
+'   retencion_datos_dias : int
+' }
+
+' entity Caracteristica {
+'   *id_caracteristica : int
+'   --
+'   descripcion : string
+'   valor : string
+' }
+
+T_USER ||--o{ T_SUBSCRIPTION : tiene
+' Suscripcion }o--|| Plan : contrata
+' Plan ||--o{ Caracteristica : incluye
+
+@enduml
