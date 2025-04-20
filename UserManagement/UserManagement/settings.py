@@ -84,6 +84,8 @@ WSGI_APPLICATION = 'UserManagement.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+import pymysql
+pymysql.install_as_MySQLdb()
 
 if os.getenv("USE_AZURE_POSTGRESQL_DB") == "True":
     DATABASES = {
