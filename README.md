@@ -105,6 +105,7 @@ python manage.py runserver
 |--------|--------------------------------------|-------------|
 | `POST` | `/api/PoC/token/`                    | Obtener token JWT |
 | `POST` | `/api/PoC/token/refresh/`            | Refrescar token |
+| `POST` | `/api/PoC/token/verify/`            | Verificar token JWT |
 | `GET`  | `/api/PoC/user/me/`                  | Obtener datos del usuario autenticado |
 | `GET`  | `/api/PoC/subscriptions/`            | Listar suscripciones activas |
 | `PUT`  | `/api/PoC/user-subscription/set-credits/` | Actualizar créditos usados |

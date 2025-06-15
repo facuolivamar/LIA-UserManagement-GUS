@@ -15,6 +15,10 @@ class Command(BaseCommand):
             email = os.getenv('ADMIN_EMAIL', 'facundoolivam@gmail.com')
             password = os.getenv('ADMIN_PASSWORD', 'pepe1234')
 
+            username2 = 'devs'
+            email2 = 'devs@gmail.com'
+            password2 = 'devs1234'
+
             # Step 1: Make migrations
             self.stdout.write('Making migrations...')
             call_command('makemigrations')
@@ -36,6 +40,18 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS('Superuser created successfully.'))
             else:
                 self.stdout.write(self.style.WARNING('Superuser already exists.'))
+
+            # Create a test user
+            if not CustomUser.objects.filter(username=username2).exists():
+                self.stdout.write('Creating test user...')
+                CustomUser.objects.create_user(
+                    username=username2,
+                    email=email2,
+                    password=password2,
+                )
+                self.stdout.write(self.style.SUCCESS('Test user created successfully.'))
+            else:
+                self.stdout.write(self.style.WARNING('Test user already exists.'))
 
         except CommandError as e:
             raise CommandError(f"Error: {e}")
